@@ -18,6 +18,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      - name: Print username
+        run: |
+          echo "Hello Vivek"
+
       - name: Install ShellCheck
         run: |
           sudo apt-get update
