@@ -1,0 +1,39 @@
+
+name: ShellCheck CI
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: Lint shell scripts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shellcheck
+
+      - name: Check shell scripts
+        shell: bash
+        run: |
+          mapfile -d '' scripts < <(
+            find . -type f -name '*.sh' \
+              -not -path './.git/*' -print0
+          )
+
+          if ((${#scripts[@]} == 0)); then
+            echo "No .sh files found; nothing to check."
+            exit 0
+          fi
+
+          shellcheck "${scripts[@]}"
